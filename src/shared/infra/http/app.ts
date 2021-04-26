@@ -7,6 +7,7 @@ import { router } from "../routes";
 
 import createConnection from "../../../shared/infra/typeorm";
 import { AppError } from "@errors/AppError";
+import "dotenv/config"
 
 createConnection();
 const app = express();

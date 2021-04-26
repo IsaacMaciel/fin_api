@@ -15,7 +15,7 @@ class CreateUserController {
       isAdmin,
     });
 
-    return res.json(user);
+    return res.status(200).json(user);
   }
 }
 

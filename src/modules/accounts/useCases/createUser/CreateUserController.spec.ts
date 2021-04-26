@@ -1,7 +1,7 @@
 import { Connection } from "typeorm";
 import request from "supertest";
 import { app } from "@shared/infra/http/app";
-import createConnection from '../../../../shared/infra/typeorm/'
+import createConnection from "../../../../shared/infra/typeorm";
 
 let connection: Connection;
 const url = "/api/v1/user/create";
@@ -34,8 +34,6 @@ describe("Create User Controller", () => {
       email: "teste@teste.com",
       password: "1234",
     });
-
-    console.log(response)
 
     expect(response.body.message).toBeTruthy();
     expect(response.status).toBe(401);
