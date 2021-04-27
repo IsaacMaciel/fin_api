@@ -1,3 +1,4 @@
+import { UserMap } from "@modules/accounts/mappers/UserMap";
 import { Request, Response } from "express";
 import { container } from "tsyringe";
 import { CreateUserUseCase } from "./CreateUserUseCase";
@@ -15,7 +16,8 @@ class CreateUserController {
       isAdmin,
     });
 
-    return res.status(200).json(user);
+    const userDTO = UserMap.toDTO(user)
+    return res.status(200).json(userDTO);
   }
 }
 

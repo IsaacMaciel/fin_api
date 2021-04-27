@@ -5,6 +5,8 @@ import { sign } from "jsonwebtoken";
 import auth from "@config/auth";
 import { IAuthenticateUserResponseDTO } from "./IAuthenticateResponseDTO";
 import { IUserRepository } from "@modules/accounts/repositories/IUserRepository";
+import { IDateProvider } from "@shared/container/providers/DateProvider/IDateProvider";
+import { IUsersTokenRepository } from "@modules/accounts/repositories/IUsersTokenRepository";
 
 interface IRequest {
   email: string;
@@ -15,7 +17,11 @@ interface IRequest {
 class AuthenticateUserUseCase {
   constructor(
     @inject("UserRepository")
-    private userRepository: IUserRepository
+    private userRepository: IUserRepository,
+    @inject("UsersTokenRepository")
+    private usersTokenRepository: IUsersTokenRepository,
+    @inject("DateProvider")
+    private dateProvider: IDateProvider
   ) {}
 
   async execute({
@@ -30,9 +36,24 @@ class AuthenticateUserUseCase {
 
     const { secret, expiresIn } = auth.jwt;
 
-    const token = sign({ userExist }, secret, {
+    const token = sign({}, secret, {
       subject: userExist.id,
       expiresIn,
+    });
+
+    const refresh_token = sign({ email }, auth.refreshToken.secret, {
+      subject: userExist.id,
+      expiresIn: auth.refreshToken.expiresIn,
+    });
+
+    const refresh_token_expires_date = this.dateProvider.addDays(
+      auth.refreshToken.expiresIn
+    );
+
+    await this.usersTokenRepository.create({
+      user_id: userExist.id,
+      expires_date: refresh_token_expires_date,
+      refresh_token,
     });
 
     return {
@@ -42,6 +63,7 @@ class AuthenticateUserUseCase {
         email: userExist.email,
       },
       token,
+      refresh_token,
     };
   }
 }

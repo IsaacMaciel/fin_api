@@ -1,5 +1,7 @@
 import { EmailOrPasswordWrongError } from "@errors/EmailOrPasswordWrongError";
 import { InMemoryUserRepository } from "@modules/accounts/repositories/in-memory/InMemoryUserRepository";
+import { InMemoryUsersTokenRepository } from "@modules/accounts/repositories/in-memory/InMemoryUsersTokenRepository";
+import { DayJsDateProvider } from "@shared/container/providers/DateProvider/implementations/DayJsDateProvider";
 import { CreateUserUseCase } from "../createUser/CreateUserUseCase";
 import { AuthenticateUserUseCase } from "./AuthenticateUserUseCase";
 
@@ -7,11 +9,15 @@ import { AuthenticateUserUseCase } from "./AuthenticateUserUseCase";
 let authenticateUserUseCase: AuthenticateUserUseCase
 let createUserUseCase: CreateUserUseCase
 let userRepositoryInMemory: InMemoryUserRepository
+let usersTokenRepositoryInMemory: InMemoryUsersTokenRepository
+let dateProvider: DayJsDateProvider
 
 describe("AuthenticateUserUseCase", () => {
   beforeEach(() => {
     userRepositoryInMemory = new InMemoryUserRepository()
-    authenticateUserUseCase = new AuthenticateUserUseCase(userRepositoryInMemory)
+    usersTokenRepositoryInMemory = new InMemoryUsersTokenRepository()
+    dateProvider = new DayJsDateProvider()
+    authenticateUserUseCase = new AuthenticateUserUseCase(userRepositoryInMemory,usersTokenRepositoryInMemory,dateProvider)
     createUserUseCase = new CreateUserUseCase(userRepositoryInMemory)
   })
 

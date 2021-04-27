@@ -2,7 +2,6 @@ import { Connection } from "typeorm";
 import request from "supertest";
 import { app } from "@shared/infra/http/app";
 import createConnection from "../../../../shared/infra/typeorm";
-import { EmailOrPasswordWrongError } from "@errors/EmailOrPasswordWrongError";
 
 let connection: Connection;
 const baseURL = "/api/v1";
@@ -31,6 +30,7 @@ describe("Authenticate User Controller", () => {
     });
 
     expect(response.body.token).toBeTruthy();
+    expect(response.body.refresh_token).toBeTruthy();
     expect(response.body.user.id).toBeTruthy();
     expect(response.body.user.name).toBeTruthy();
     expect(response.body.user.email).toBeTruthy();
